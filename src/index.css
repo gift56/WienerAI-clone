@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  scroll-behavior: smooth !important;
+  font-family: Sausages, sans-serif;
+}
+
+@font-face {
+  font-family: Sausages;
+  src: url("./assets/fonts/Sausage.ddf796251b03e84f.otf") format("opentype");
+}
+@font-face {
+  font-family: sausages-light;
+  src: url("./assets/fonts/sausages-light.7f718c6e69c510e1.ttf");
+}
+
+header {
+  transition: all 300ms;
+}
+header.scrolled {
+  background-color: black;
+  box-shadow: 0px 6px 20px 0px #0000001f;
+}
+
+@layer base {
+  body {
+    @apply bg-[#6C42A8] text-white;
+  }
+  .contain {
+    @apply w-[90%] mx-auto;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  border-radius: 0;
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #ba8bf9b3;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ba8bf999;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #ba8bf9cc;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: #D6D6D6;
+  opacity: 1;
+}
+
+/* .swiper-pagination {
+  background-color: white;
+  padding: 10px 0;
+} */
+
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background-color: #EAB161;
+}
