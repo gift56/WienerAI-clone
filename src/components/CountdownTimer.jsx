@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const CountdownTimer = ({ endDate }) => {
+const CountdownTimer = ({ endDate, loadingEthValue }) => {
   const calculateTimeLeft = () => {
     const difference = +new Date(endDate) - +new Date();
     let timeLeft = {};
@@ -34,32 +34,45 @@ const CountdownTimer = ({ endDate }) => {
   return (
     <div className="flex justify-between items-center w-full md:w-[90%] bg-[#966CF2] h-[85px] rounded-2xl px-6">
       {Object.keys(timeLeft).length ? (
-        <>
-          <div className="text-center mx-2">
-            <span className="text-sm font-normal font-sauage">Days</span>
-            <h6 className="text-2xl font-normal font-sauage">
-              {formatTime(timeLeft.days)}
-            </h6>
-          </div>
-          <div className="text-center mx-2">
-            <span className="text-sm font-normal font-sauage">Hours</span>
-            <h6 className="text-2xl font-normal font-sauage">
-              {formatTime(timeLeft.hours)}
-            </h6>
-          </div>
-          <div className="text-center mx-2">
-            <span className="text-sm font-normal font-sauage">Minutes</span>
-            <h6 className="text-2xl font-normal font-sauage">
-              {formatTime(timeLeft.minutes)}
-            </h6>
-          </div>
-          <div className="text-center mx-2">
-            <span className="text-sm font-normal font-sauage">Seconds</span>
-            <h6 className="text-2xl font-normal font-sauage">
-              {formatTime(timeLeft.seconds)}
-            </h6>
-          </div>
-        </>
+        <div className="w-full flex justify-between items-center">
+          {!loadingEthValue && (
+            <div className="w-full flex justify-between items-center">
+              <div className="text-center mx-2">
+                <span className="text-sm font-normal font-sauage">Days</span>
+                <h6 className="text-2xl font-normal font-sauage">
+                  {formatTime(timeLeft.days)}
+                </h6>
+              </div>
+              <div className="text-center mx-2">
+                <span className="text-sm font-normal font-sauage">Hours</span>
+                <h6 className="text-2xl font-normal font-sauage">
+                  {formatTime(timeLeft.hours)}
+                </h6>
+              </div>
+              <div className="text-center mx-2">
+                <span className="text-sm font-normal font-sauage">Minutes</span>
+                <h6 className="text-2xl font-normal font-sauage">
+                  {formatTime(timeLeft.minutes)}
+                </h6>
+              </div>
+              <div className="text-center mx-2">
+                <span className="text-sm font-normal font-sauage">Seconds</span>
+                <h6 className="text-2xl font-normal font-sauage">
+                  {formatTime(timeLeft.seconds)}
+                </h6>
+              </div>
+            </div>
+          )}
+          {loadingEthValue && (
+            <>
+              {[0, 1, 2, 3].map((_, index) => (
+                <div key={index} className="w-[30%] mx-1">
+                  <div className="bg-primary animate-pulse h-12 rounded-xl w-full"></div>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       ) : (
         <div className="text-center mx-2">
           <div className="text-2xl">0</div>

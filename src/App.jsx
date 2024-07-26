@@ -20,12 +20,63 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import Marquee from "react-fast-marquee";
+import axios from "axios";
+
+const conversionRates = {
+  eth: 0.00073,
+  usdt: 1.0,
+  card: 0.5,
+};
 
 const App = () => {
   const [mobileNav, setMobileNav] = useState(false);
   const modalRef = useRef(null);
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
+  const [activeToken, setActiveToken] = useState("eth");
+  const [ethValue, setEthValue] = useState(0);
+  const [waiValue, setWaiValue] = useState(0);
+  const [conversionRates, setConversionRates] = useState({
+    eth: 0.00073,
+    usdt: 1.0,
+    card: 0.5,
+  });
+  const [loadingEthValue, setLoadingEthValue] = useState(false);
+
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        setLoadingEthValue(true);
+        const response = await axios.get(
+          "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,tether,cardano&vs_currencies=usd"
+        );
+        setConversionRates({
+          eth: response.data.ethereum.usd,
+          usdt: response.data.tether.usd,
+          card: response.data.cardano.usd,
+        });
+      } catch (error) {
+        console.error("Error fetching rates:", error);
+      } finally {
+        setLoadingEthValue(false);
+      }
+    };
+
+    fetchRates();
+  }, []);
+
+  useEffect(() => {
+    const rate = conversionRates[activeToken];
+    setWaiValue(ethValue / rate);
+  }, [ethValue, activeToken, conversionRates]);
+
+  const handleTokenClick = (token) => {
+    setActiveToken(token);
+  };
+
+  const handleEthChange = (event) => {
+    setEthValue(event.target.value);
+  };
 
   const swiperRef = useRef(null);
 
@@ -364,51 +415,81 @@ const App = () => {
                 Last Chance to Buy! Presale Ends in:
               </h3>
               <div className="w-full flex items-center justify-center">
-                <CountdownTimer endDate={endDate} />
+                <CountdownTimer
+                  endDate={endDate}
+                  loadingEthValue={loadingEthValue}
+                />
               </div>
-              <h3 className="text-2xl text-center font-normal font-sauage">
-                OVER $7M RAISED
-              </h3>
+              {!loadingEthValue && (
+                <h3 className="text-2xl text-center font-normal font-sauage relative">
+                  OVER $7M RAISED
+                </h3>
+              )}
+              {loadingEthValue && (
+                <div className="bg-primary animate-pulse h-12 rounded-xl w-[190px]"></div>
+              )}
               <ul className="w-full flex flex-col items-center justify-center gap-2">
-                <li className="flex items-center justify-center gap-2">
-                  <span className="text-center uppercase text-xs font-normal font-sauage flex items-center gap-1">
-                    Your purchased $WAI{" "}
-                    <span className="font-sauage"> = 0</span>
-                  </span>
-                  <img
-                    src="/icons/infoIcon.svg"
-                    alt="info icon"
-                    className="cursor-pointer"
-                  />
+                <li className="flex items-center justify-center gap-2 relative">
+                  {!loadingEthValue && (
+                    <>
+                      <span className="text-center uppercase text-xs font-normal font-sauage flex items-center gap-1">
+                        Your purchased $WAI{" "}
+                        <span className="font-sauage"> = 0</span>
+                      </span>
+                      <img
+                        src="/icons/infoIcon.svg"
+                        alt="info icon"
+                        className="cursor-pointer"
+                      />
+                    </>
+                  )}
+                  {loadingEthValue && (
+                    <div className="bg-primary animate-pulse h-8 rounded-xl w-[190px]"></div>
+                  )}
                 </li>
-                <li className="flex items-center justify-center gap-2">
-                  <span className="text-center uppercase text-xs font-normal font-sauage flex items-center gap-1">
-                    Your stakeable $WAI{" "}
-                    <span className="font-sauage"> = 0</span>
-                  </span>
-                  <img
-                    src="/icons/infoIcon.svg"
-                    alt="info icon"
-                    className="cursor-pointer"
-                  />
+                <li className="flex items-center justify-center gap-2 relative">
+                  {!loadingEthValue && (
+                    <>
+                      <span className="text-center uppercase text-xs font-normal font-sauage flex items-center gap-1">
+                        Your stakeable $WAI{" "}
+                        <span className="font-sauage"> = 0</span>
+                      </span>
+                      <img
+                        src="/icons/infoIcon.svg"
+                        alt="info icon"
+                        className="cursor-pointer"
+                      />
+                    </>
+                  )}
+                  {loadingEthValue && (
+                    <div className="bg-primary animate-pulse h-8 rounded-xl w-[160px]"></div>
+                  )}
                 </li>
               </ul>
-              <div className="w-full flex items-center justify-between gap-5">
-                <div className="w-[19%] md:w-[23%] h-0.5 bg-white"></div>
-                <span className="text-sm font-medium font-sauage">
-                  1 $WAI = $0.00073
-                </span>
-                <div className="w-[19%] md:w-[23%] h-0.5 bg-white"></div>
+              <div className="w-full flex items-center justify-between gap-5 relative">
+                {!loadingEthValue && (
+                  <>
+                    <div className="w-[19%] md:w-[23%] h-0.5 bg-white"></div>
+                    <span className="text-sm font-medium font-sauage">
+                      1 $WAI = $0.00073
+                    </span>
+                    <div className="w-[19%] md:w-[23%] h-0.5 bg-white"></div>
+                  </>
+                )}
+                {loadingEthValue && (
+                  <div className="bg-primary animate-pulse h-10 rounded-xl w-full"></div>
+                )}
               </div>
               <div className="w-full flex flex-wrap md:grid md:grid-cols-3 items-center justify-center gap-5">
                 {["eth", "usdt", "card"].map((token) => (
                   <div
                     key={token}
                     className={`w-[45%] md:w-full h-[50px] flex items-center justify-center gap-4 rounded-[30px] ${
-                      token === "eth"
+                      token === activeToken
                         ? "bg-[#BA8BF9] text-white"
                         : "bg-[#EEE8FA] text-[#AC8EEB]"
                     } transition-all duration-300 cursor-pointer capitalize`}
+                    onClick={() => handleTokenClick(token)}
                   >
                     <img
                       src={`/icons/${token}Icon.svg`}
@@ -428,7 +509,7 @@ const App = () => {
                     className="flex items-center justify-between w-full cursor-pointer"
                   >
                     <span className="text-xs font-normal text-[#E3E3E3] font-sauage">
-                      ETH you pay
+                      {`${activeToken.toUpperCase()} you pay`}
                     </span>
                     <span className="text-xs font-normal text-[#E3E3E3] font-sauge">
                       Max
@@ -440,11 +521,18 @@ const App = () => {
                       placeholder="0"
                       id="eth"
                       min={0}
+                      value={ethValue}
+                      onChange={handleEthChange}
                       className="w-full pl-3 pr-10 bg-transparent outline-none border-2 border-[#EEE8FA] rounded-2xl text-base font-normal text-white h-12"
                     />
+
                     <img
-                      src="/icons/ethIcon.svg"
-                      alt="eth icon"
+                      src={`${
+                        activeToken === "card"
+                          ? "/icons/dollar.svg"
+                          : `/icons/${activeToken}Icon.svg`
+                      }`}
+                      alt={`${activeToken} icon`}
                       className="rouned-full absolute top-[17%] right-3 w-8 h-8"
                     />
                   </div>
@@ -465,7 +553,9 @@ const App = () => {
                       placeholder="0"
                       id="wai"
                       min={0}
-                      className="w-full pl-3 pr-10 bg-transparent outline-none border-2 border-[#EEE8FA] rounded-2xl text-base font-normal text-white h-12"
+                      value={waiValue}
+                      readOnly
+                      className="w-full pl-3 pr-14 bg-transparent outline-none border-2 border-[#EEE8FA] rounded-2xl text-base font-normal text-white h-12"
                     />
                     <img
                       src="favicon.svg"
