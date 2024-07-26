@@ -896,7 +896,7 @@ const App = () => {
             <img
               src="/images/tunnelDog.svg"
               alt="tunnel dog image"
-              className="absolute -left-10 bottom-[-15%]"
+              className="lg:absolute lg:-left-10 lg:bottom-[-15%]"
             />
           </div>
         </div>
