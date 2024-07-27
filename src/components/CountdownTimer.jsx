@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import CustomizeButton from "./CustomizeButton";
 
 const CountdownTimer = ({ endDate, loadingEthValue }) => {
   const calculateTimeLeft = () => {
@@ -74,9 +75,12 @@ const CountdownTimer = ({ endDate, loadingEthValue }) => {
           )}
         </div>
       ) : (
-        <div className="text-center mx-2">
-          <div className="text-2xl">0</div>
-          <div>Time's up!</div>
+        <div className="w-full flex items-center justify-center">
+          <CustomizeButton
+            title="Claim $WAI"
+            className="px-8 !bg-primary uppercase !font-normal"
+            handleClick={() => navigate("/wallets/")}
+          />
         </div>
       )}
     </div>

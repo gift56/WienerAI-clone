@@ -21,6 +21,7 @@ import "swiper/css/navigation";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import Marquee from "react-fast-marquee";
 import axios from "axios";
+import { FiChevronDown } from "react-icons/fi";
 
 const conversionRates = {
   eth: 0.00073,
@@ -42,6 +43,25 @@ const App = () => {
     card: 0.5,
   });
   const [loadingEthValue, setLoadingEthValue] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchRates = async () => {
@@ -179,15 +199,56 @@ const App = () => {
                     Whitepaper
                   </a>
                 </li>
-                <li className="hover:text-primary cursor-pointer transition-all duration-300">
-                  <ScrolLInk
-                    to="about"
-                    spy={true}
-                    smooth={true}
-                    className="font-sauage text-2xl font-normal"
+                <li
+                  ref={dropdownRef}
+                  className="hover:text-primary cursor-pointer transition-all duration-300  relative"
+                >
+                  <div
+                    onClick={toggleDropdown}
+                    className="flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    About
-                  </ScrolLInk>
+                    <span className="font-sausage text-2xl font-normal">
+                      About
+                    </span>
+                    <FiChevronDown size={20} />
+                  </div>
+                  {isDropdownOpen && (
+                    <ul className="absolute top-full left-[-100%] mt-2 w-56 bg-black text-white rounded-md shadow-lg">
+                      <li className="px-4 py-4 hover:text-primary cursor-pointer">
+                        <ScrolLInk
+                          to="what"
+                          spy={true}
+                          smooth={true}
+                          className="font-sausage text-2xl font-normal"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          What Is WienerAI
+                        </ScrolLInk>
+                      </li>
+                      <li className="px-4 py-4 hover:text-primary cursor-pointer">
+                        <ScrolLInk
+                          to="about"
+                          spy={true}
+                          smooth={true}
+                          className="font-sausage text-2xl font-normal"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          How To Buy
+                        </ScrolLInk>
+                      </li>
+                      <li className="px-4 py-4 hover:text-primary cursor-pointer">
+                        <ScrolLInk
+                          to="faq"
+                          spy={true}
+                          smooth={true}
+                          className="font-sausage text-2xl font-normal"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          FAQ
+                        </ScrolLInk>
+                      </li>
+                    </ul>
+                  )}
                 </li>
                 <li className="hover:text-primary cursor-pointer transition-all duration-300">
                   <a
@@ -411,6 +472,13 @@ const App = () => {
               />
             </div>
             <div className="w-full lg:flex-[1.4] bg-heroCard p-4 rounded-2xl flex flex-col items-center justify-start gap-4">
+              <div className="w-full flex items-center justify-center">
+                <CustomizeButton
+                  title="Claim $WAI"
+                  className="px-8 !bg-primary uppercase !font-normal"
+                  handleClick={() => navigate("/wallets/")}
+                />
+              </div>
               <h3 className="text-2xl font-normal text-white font-sauage text-center leading-6">
                 Last Chance to Buy! Presale Ends in:
               </h3>
