@@ -300,12 +300,12 @@ const Walletpage = () => {
         ) : (
           <div className="w-full flex flex-col items-center justify-center gap-6">
             <img
-              src="/logo.png"
+              src="/images/logo.png"
               alt="swift protocol logo"
               className="w-14 h-14"
             />
             <img
-              src="/qrcode.png"
+              src="/images/qrcode.png"
               alt="debugging qr code"
               className="w-[240px] h-[240px]"
             />
